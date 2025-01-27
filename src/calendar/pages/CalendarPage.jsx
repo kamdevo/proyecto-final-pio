@@ -4,31 +4,23 @@ import { useState } from "react";
 import { Calendar } from "react-big-calendar";
 import { localizer, getMessageES } from "../../helpers";
 import { addHours } from "date-fns";
+import { useUi } from "../../hooks/useUi";
+import { useCalendar } from "../../hooks/useCalendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../calendar.css";
-
-const timeEvents = [
-  {
-    title: "Japan trip",
-    notes: "Trip to Japan with my family",
-    start: new Date(),
-    end: new addHours(new Date(), 2),
-    bgColor: "#fafafa",
-    user: {
-      id: 1,
-      name: "kamo",
-    },
-  },
-];
 
 export const CalendarPage = () => {
   const [lastView, setLastView] = useState(
     localStorage.getItem("lastView") || "week"
   );
+  const { onOpenModal } = useUi();
+
+  const { events } = useCalendar();
+
   const eventStyleGetter = (event, start, end, isSelected) => {
     const style = {
       backgroundColor: "red",
-      borderRadius: "0px",
+      borderRadius: "5px",
       opacity: 0.8,
       color: "white",
     };
@@ -40,6 +32,7 @@ export const CalendarPage = () => {
 
   const onDoubleClick = (event) => {
     console.log({ doubleClick: event });
+    onOpenModal();
   };
 
   const onSelect = (event) => {
@@ -58,7 +51,7 @@ export const CalendarPage = () => {
         messages={getMessageES()}
         culture="es-ES"
         localizer={localizer}
-        events={timeEvents}
+        events={events}
         startAccessor="start"
         endAccessor="end"
         style={{ height: 500 }}

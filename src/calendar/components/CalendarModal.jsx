@@ -2,11 +2,12 @@ import { addHours, differenceInSeconds } from "date-fns";
 import { useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
-
 import Modal from "react-modal";
 import "react-datepicker/dist/react-datepicker.css";
+import { useUi } from "../../hooks/useUi";
 
 registerLocale("es", es);
+
 const customStyles = {
   content: {
     top: "50%",
@@ -24,18 +25,14 @@ const customStyles = {
 Modal.setAppElement("#root");
 
 const CalendarModal = () => {
+  const { isModalOpen, onCloseModal } = useUi();
+
   const [formValue, setFormValue] = useState({
     title: "evento",
     notes: "notas",
     start: new Date(),
     end: addHours(new Date(), 2),
   });
-  const [isOpen, setIsOpen] = useState(true);
-
-  const onCloseModal = () => {
-    console.log("Cerrando modal");
-    setIsOpen(false);
-  };
 
   const handleInputChange = ({ target }) => {
     setFormValue((prevFormValue) => ({
@@ -68,7 +65,7 @@ const CalendarModal = () => {
 
   return (
     <Modal
-      isOpen={isOpen}
+      isOpen={isModalOpen}
       onRequestClose={onCloseModal}
       style={customStyles}
       className="modal"
