@@ -1,10 +1,11 @@
 import { addHours, differenceInSeconds } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
 import Modal from "react-modal";
 import "react-datepicker/dist/react-datepicker.css";
-import { useUi } from "../../hooks/useUi";
+import { useUi, useCalendar } from "../../hooks";
+import Swal from "sweetalert2";
 
 registerLocale("es", es);
 
@@ -24,15 +25,29 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-const CalendarModal = () => {
+export const CalendarModal = () => {
   const { isModalOpen, onCloseModal } = useUi();
+  const { activeEvent, eventSaving } = useCalendar();
 
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const [formValue, setFormValue] = useState({
     title: "evento",
     notes: "notas",
     start: new Date(),
     end: addHours(new Date(), 2),
   });
+
+  useEffect(() => {
+    if (activeEvent !== null) {
+      setFormValue({ ...activeEvent });
+    }
+  }, [activeEvent]);
+
+  const titleClass = useMemo(() => {
+    if (!formSubmitted) return "";
+
+    return formValue.title.length > 0 ? "is-valid" : "is-invalid";
+  }, [formValue.title, formSubmitted]);
 
   const handleInputChange = ({ target }) => {
     setFormValue((prevFormValue) => ({
@@ -51,16 +66,23 @@ const CalendarModal = () => {
   };
 
   const handleSubmit = (event) => {
+    setFormSubmitted(true);
     event.preventDefault();
     const dif = differenceInSeconds(formValue.end, formValue.start);
 
-    if (!dif || dif < 0) {
-      console.log("error");
-    }
-
-    if (formValue.title.trim().length <= 0) {
+    if (isNaN(dif) || dif <= 0) {
+      console.log("Error en fechas");
+      Swal.fire("Fechas incorrectas", "Revisar las fechas ingresadas", "error");
       return;
     }
+
+    if (formValue.title.length <= 0) {
+      return;
+    }
+
+    eventSaving(formValue);
+    onCloseModal();
+    setFormSubmitted(false);
   };
 
   return (
@@ -72,7 +94,7 @@ const CalendarModal = () => {
       overlayClassName="modal-fondo"
       closeTimeoutMS={200}
     >
-      <h1> Nuevo evento </h1>
+      <h1>Evento </h1>
       <hr />
       <form className="container" onSubmit={handleSubmit}>
         <div className="form-group mb-2">
@@ -143,5 +165,3 @@ const CalendarModal = () => {
     </Modal>
   );
 };
-
-export default CalendarModal;

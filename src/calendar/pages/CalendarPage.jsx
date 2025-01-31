@@ -1,21 +1,20 @@
-import { Navbar, CalendarEvent } from "../";
-import CalendarModal from "../components/CalendarModal";
-import { useState } from "react";
+import { Navbar, CalendarEvent, CalendarModal, AddFab, DeleteFab } from "../";
+
+import { act, useState } from "react";
 import { Calendar } from "react-big-calendar";
 import { localizer, getMessageES } from "../../helpers";
-import { addHours } from "date-fns";
-import { useUi } from "../../hooks/useUi";
-import { useCalendar } from "../../hooks/useCalendar";
+import { useUi, useCalendar } from "../../hooks";
+
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../calendar.css";
 
 export const CalendarPage = () => {
+  const { onOpenModal } = useUi();
+  const { events, onSetActiveEvent, activeEvent } = useCalendar();
+
   const [lastView, setLastView] = useState(
     localStorage.getItem("lastView") || "week"
   );
-  const { onOpenModal } = useUi();
-
-  const { events } = useCalendar();
 
   const eventStyleGetter = (event, start, end, isSelected) => {
     const style = {
@@ -30,13 +29,13 @@ export const CalendarPage = () => {
     };
   };
 
-  const onDoubleClick = (event) => {
-    console.log({ doubleClick: event });
-    onOpenModal();
-  };
-
   const onSelect = (event) => {
     console.log({ click: event });
+    onSetActiveEvent(event);
+  };
+
+  const onDoubleClick = () => {
+    onOpenModal();
   };
 
   const onViewChanged = (event) => {
@@ -65,6 +64,9 @@ export const CalendarPage = () => {
       />
 
       <CalendarModal />
+      <AddFab />
+
+      {activeEvent && <DeleteFab />}
     </main>
   );
 };

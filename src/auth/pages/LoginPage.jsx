@@ -36,7 +36,7 @@ export const LoginPage = () => {
               className="form-group mb-2 d-flex align-items-center
             gap-1"
             >
-              <User color="#ffffff" />
+              <User color="#000" />
               <input
                 type="text"
                 className="form-control"
@@ -47,7 +47,7 @@ export const LoginPage = () => {
               className="form-group mb-2 d-flex align-items-center
             gap-1"
             >
-              <Mail color="#ffffff" />
+              <Mail color="#000" />
               <input
                 type="email"
                 className="form-control"
@@ -58,7 +58,7 @@ export const LoginPage = () => {
               className="form-group mb-2 d-flex align-items-center
             gap-1"
             >
-              <Lock color="#ffffff" />
+              <Lock color="#000" />
               <input
                 type="password"
                 className="form-control"
@@ -67,7 +67,7 @@ export const LoginPage = () => {
             </div>
 
             <div className="form-group mb-2 d-flex align-items-center gap-1">
-              <LockKeyhole color="#ffffff" />
+              <LockKeyhole color="#000" />
               <input
                 type="password"
                 className="form-control"
